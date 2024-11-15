@@ -22,6 +22,9 @@ go.work
 
 # My custom stuff
 .direnv/
-shell.nix
 .envrc
+.env
+.fish-env
+shell.nix
 filepuller
+main

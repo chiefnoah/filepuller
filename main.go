@@ -5,12 +5,12 @@ import (
 	"crypto/tls"
 	"crypto/x509"
 	"fmt"
+	"log"
 	"os"
 	"os/signal"
 	"path"
-	"time"
-	"log"
 	"strings"
+	"time"
 
 	"github.com/nats-io/nats.go"
 	"github.com/nats-io/nats.go/jetstream"
@@ -21,16 +21,19 @@ func loadCertificates(tlsca, tlskey, tlscert string) (*tls.Config, error) {
 	if err != nil {
 		return nil, fmt.Errorf("Unable to load x509 keypair (%s, %s): %w", tlscert, tlskey, err)
 	}
+	log.Println("Loaded TLS and cert file.")
 
 	b, err := os.ReadFile(tlsca)
 	if err != nil {
 		return nil, fmt.Errorf("Unable to read in CA certificate bytes at %s: %w", tlsca, err)
 	}
+	log.Println("Loaded CA file.")
 
 	pool := x509.NewCertPool()
 	if !pool.AppendCertsFromPEM(b) {
 		return nil, fmt.Errorf("Unable to append PEM certificate to new Cert Pool")
 	}
+	log.Println("Created pool for validating certificates against CA certificate")
 	return &tls.Config{
 		RootCAs: pool,
 		GetClientCertificate: func(_ *tls.CertificateRequestInfo) (*tls.Certificate, error) {
@@ -111,7 +114,7 @@ func main() {
 	}
 
 	objStoreConfig := jetstream.ObjectStoreConfig{
-		Bucket:      bucketName,
+		Bucket: bucketName,
 		//MaxBytes:    1024 * 1024 * 1024 * 50, // 50GB
 		Compression: true,
 		Storage:     jetstream.FileStorage,
@@ -143,10 +146,12 @@ func main() {
 			return
 		}
 		fmt.Printf("Successfully downloaded %s to %s\n", filename, destinationPath)
-		err = msg.Ack(); if err != nil {
+		err = msg.Ack()
+		if err != nil {
 			log.Printf("ERROR: Unable to acknowledge message: %+s", msg)
 		}
-		err = objStore.Delete(ctx, filename); if err != nil {
+		err = objStore.Delete(ctx, filename)
+		if err != nil {
 			log.Printf("WARN: unable to delete object %s: %s", filename, err.Error())
 		}
 	}, jetstream.ConsumeErrHandler(consumeErrorHandler))
