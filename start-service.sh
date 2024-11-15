@@ -1,7 +1,7 @@
 #!/usr/bin/env sh
 set -ex
 
-. .env
+. ./.env
 
 systemd-run -u filepuller \
             --user \
