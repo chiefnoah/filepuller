@@ -5,6 +5,7 @@ set -ex
 
 systemd-run -u filepuller \
             --user \
+            --collect \
             -E NATS_URL=${NATS_URL} \
             -E NATS_CA=${NATS_CA} \
             -E NATS_CERT=${NATS_CERT} \
