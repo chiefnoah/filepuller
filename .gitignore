@@ -29,3 +29,4 @@ shell.nix
 filepuller
 main
 result
+.tsk/

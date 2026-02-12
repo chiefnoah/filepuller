@@ -1,7 +1,6 @@
 {
-  pkgs,
-  lib,
   buildGoModule,
+  ...
 }:
 buildGoModule (finalAttrs: {
   pname = "filepuller";
