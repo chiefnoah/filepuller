@@ -159,5 +159,11 @@ func main() {
 	case <-exit:
 		consumeCtx.Drain()
 		cancel()
+	case <-consumeCtx.Closed():
+		cancel()
+		fmt.Println("Consumer closed.")
+	}
+	if err != nil {
+		fmt.Printf("Error in consumer: %e\n", err)
 	}
 }

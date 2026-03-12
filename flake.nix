@@ -33,6 +33,6 @@
       }
     ))
     // {
-      nixosModules.default = import ./services.nix inputs;
+      nixosModules.default = import ./service.nix;
     };
 }
